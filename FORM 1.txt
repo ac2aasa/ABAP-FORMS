@@ -1,0 +1,44 @@
+*&---------------------------------------------------------------------*
+*& Report  ZZ_ARYANKNA1FORM
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+REPORT ZZ_ARYANKNA1FORM.
+
+data : it_kna1 type zz_itkna1,
+      wa_kna1 type ZZTYKNA1.
+
+SELECT-OPTIONS : s_kunnr for WA_KNA1-kunnr.
+
+select kunnr name1 ort01 land1 from kna1 into table it_kna1 where
+        kunnr in s_kunnr.
+
+CALL FUNCTION '/1BCDWB/SF00000176'
+* EXPORTING
+*   ARCHIVE_INDEX              =
+*   ARCHIVE_INDEX_TAB          =
+*   ARCHIVE_PARAMETERS         =
+*   CONTROL_PARAMETERS         =
+*   MAIL_APPL_OBJ              =
+*   MAIL_RECIPIENT             =
+*   MAIL_SENDER                =
+*   OUTPUT_OPTIONS             =
+*   USER_SETTINGS              = 'X'
+* IMPORTING
+*   DOCUMENT_OUTPUT_INFO       =
+*   JOB_OUTPUT_INFO            =
+*   JOB_OUTPUT_OPTIONS         =
+  TABLES
+    IT_KNA1                    = it_kna1
+* EXCEPTIONS
+*   FORMATTING_ERROR           = 1
+*   INTERNAL_ERROR             = 2
+*   SEND_ERROR                 = 3
+*   USER_CANCELED              = 4
+*   OTHERS                     = 5
+          .
+IF SY-SUBRC <> 0.
+* Implement suitable error handling here
+ENDIF.
